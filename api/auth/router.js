@@ -1,13 +1,18 @@
 const Auth = require("./helper");
+const usersdb = require("./usersdb");
 const AuthHelper = Auth.AuthHelper;
 const AuthHelper1 = new AuthHelper();
+const Userdb = require("./usersdb");
+
 class AuthRouter {
   register = (req, res) => {
-    const user = {
+    const userDetails = {
       email: req.body.email,
       password: req.body.password,
     };
-    const { data, error } = AuthHelper1.register({ userDetails: user });
+    const { user , error } = usersdb.updateUser(userDetails);
+    console.log([user, error]);
+    const { data, errors } = AuthHelper1.register({ userDetails: user });
     if (error) {
       return res.status(400).json(error);
     }

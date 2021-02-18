@@ -1,9 +1,8 @@
+const { string } = require("joi");
 const {
   validateUser,
   convertJoiErrorMessageInToObject,
 } = require("../../utils");
-const users = [];
-
 class AuthHelper {
   register({ userDetails }) {
     const { error } = validateUser(userDetails);
@@ -39,5 +38,4 @@ class AuthHelper {
 
 module.exports = {
   AuthHelper,
-  users,
 };
