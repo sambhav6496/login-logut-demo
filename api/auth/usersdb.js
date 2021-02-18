@@ -8,6 +8,7 @@ const userSchema = {
   email: {
     type: String,
     required: true,
+    min: 10,
   },
   password: {
     type: String,
@@ -18,27 +19,59 @@ const userSchema = {
 const User = mongoose.model("User", userSchema);
 
 class Usersdb {
-  updateUser(userDetails) {
-    User.find({}, function (err, foundItems) {
-      const checkUserByEmail = foundItems.find(
-        (u) => u.email === userDetails.email
-      );
-      console.log(checkUserByEmail);
-      if (checkUserByEmail) {
-        console.log("in loop");
-        return {
-          error : "user already exist",
+  register(userDetails) {
+    return new Promise((resolve, reject) => {
+      User.find({}, function (err, foundItems) {
+        const checkUserByEmail = foundItems.find(
+          (u) => u.email === userDetails.email
+        );
+        if (checkUserByEmail) {
+          console.log("in loop");
+          resolve({
+            error: "user already exist",
+          });
         }
-      }
-      const user = new User({
-        email: userDetails.email,
-        password: userDetails.password,
+        newUser();
+        async function newUser() {
+          const user = new User({
+            email: userDetails.email,
+            password: userDetails.password,
+          });
+          try {
+            await user.save();
+            resolve({
+              user: userDetails,
+            });
+          } catch (error) {
+            resolve({
+              error: error.message,
+            });
+          }
+        }
       });
-      user.save();
-      return {
-        user : userDetails,
-      }
-    })
+    });
+  }
+  login(userDetails) {
+    return new Promise((resolve, reject) => {
+      User.find({}, function (err, foundItems) {
+        const checkUserByEmail = foundItems.find(
+          (u) => u.email === userDetails.email
+        );
+        if (checkUserByEmail) {
+          if (checkUserByEmail.password === userDetails.password) {
+            resolve({
+              userResponse: userDetails,
+            });
+          }
+          resolve({
+            message: "email or password is invalid",
+          });
+        }
+        resolve({
+          message: "email or passwor is invalid",
+        });
+      });
+    });
   }
 }
 

@@ -5,13 +5,6 @@ const {
 } = require("../../utils");
 class AuthHelper {
   register({ userDetails }) {
-    const { error } = validateUser(userDetails);
-    if (error) {
-      const errors = convertJoiErrorMessageInToObject(error.details);
-      return {
-        error: errors,
-      };
-    }
     const user = users.find((u) => u.email === userDetails.email);
     if (user) {
       return {
