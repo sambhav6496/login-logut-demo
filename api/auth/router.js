@@ -1,29 +1,29 @@
-const Auth = require("./helper");
-const AuthHelper = Auth.AuthHelper;
-const AuthHelper1 = new AuthHelper();
+const AuthHelper = require("./hekper");
+
 class AuthRouter {
-  register = (req, res) => {
-    const user = {
-      email: req.body.email,
-      password: req.body.password,
-    };
-    const { data, error } = AuthHelper1.register({ userDetails: user });
-    if (error) {
-      return res.status(400).json(error);
+  register = async (req, res) => {
+    try {
+      const userDetails = {
+        email: req.body.email,
+        password: req.body.password,
+      };
+      const user = await AuthHelper.register(userDetails);
+      return res.status(200).json(user);
+    } catch (error) {
+      res.status(400).json(error);
     }
-    return res.status(200).json(data);
   };
 
-  login = (req, res) => {
-    const user = {
-      email: req.body.email,
-      password: req.body.password,
-    };
-    const { userResponse, error } = AuthHelper1.login(user);
-    if (error) {
+  login = async (req, res) => {
+    try {
+      const userDetails = {
+        email: req.body.email,
+        password: req.body.password,
+      };
+      const user = await AuthHelper.login(userDetails);
+      return res.status(200).json(user);
+    } catch (error) {
       res.status(400).json(error);
-    } else {
-      res.status(200).json(userResponse);
     }
   };
 }
